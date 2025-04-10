@@ -1,45 +1,43 @@
 name: Terraform CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   terraform:
-    name: Terraform
+    name: Terraform Checks
     runs-on: ubuntu-latest
-    env:
-      TF_INPUT: false
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: "1.5.0"
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
 
-      - name: Initialize Terraform
-        run: terraform init
+    - name: Terraform Init
+      run: terraform init
 
-      - name: Terraform Validate
-        run: terraform validate
+    - name: Terraform Format Check
+      run: terraform fmt -check
 
-      - name: Install TFLint
-        run: |
-          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+    - name: Terraform Validate
+      run: terraform validate
 
-      - name: Run TFLint
-        run: tflint
+    - name: Terraform Plan
+      run: terraform plan -no-color
 
-      - name: Install Checkov
-        run: pip install checkov
+    - name: Install tflint
+      run: |
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
-      - name: Run Checkov
-        run: checkov -d .
+    - name: Run tflint
+      run: tflint
 
-      - name: Terraform Plan
-        run: terraform plan -no-color -input=false
+    - name: Install Checkov
+      run: pip install checkov
+
+    - name: Run Checkov
+      run: checkov -d .
