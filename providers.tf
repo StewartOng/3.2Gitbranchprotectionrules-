@@ -5,7 +5,7 @@ terraform {
       version = "~> 5.0"
     }
   }
-
+# required for tflint to work properly
   required_version = ">= 1.3.0"
 }
 
