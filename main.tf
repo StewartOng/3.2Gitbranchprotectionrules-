@@ -1,17 +1,9 @@
 
 terraform {
-
-  
-
   backend "s3" {
     bucket = "sctp-ce9-tfstate"
     key    = "stewart-s3-tf-ci.tfstate" #Change this
-
-
     region = "us-east-1"
-
-
-
   }
 }
 
