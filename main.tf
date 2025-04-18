@@ -36,6 +36,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "s3_tf_encryption"
   }
 }
 
+
 resource "aws_s3_bucket_public_access_block" "s3_tf_public_block" {
   bucket = aws_s3_bucket.s3_tf.id
 
@@ -52,7 +53,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "s3_tf_lifecycle" {
     id     = "expire-after-1-year"
     status = "Enabled"
 
-    filter {}
+   filter {
+  prefix = "logs/"
+}
+
+
 
     expiration {
       days = 365
@@ -125,7 +130,10 @@ resource "aws_s3_bucket_replication_configuration" "s3_tf_replication" {
     id     = "replication-rule"
     status = "Enabled"
 
-    filter {}
+    
+    filter {
+  prefix = ""
+}
 
     destination {
       bucket        = "arn:aws:s3:::your-replica-bucket-name" # Replace
