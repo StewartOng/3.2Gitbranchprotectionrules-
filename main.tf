@@ -61,5 +61,5 @@ resource "aws_iam_role_policy" "replication_policy" {
   })
 }
 locals {
-  name_prefix = "my-prefix"  # Adjust this as needed
+  name_prefix = "my-prefix" # Adjust this as needed
 }
