@@ -53,9 +53,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "s3_tf_lifecycle" {
     id     = "expire-after-1-year"
     status = "Enabled"
 
-   filter {
-  prefix = "logs/"
-}
+    filter {
+      prefix = "logs/"
+    }
 
 
 
@@ -130,10 +130,10 @@ resource "aws_s3_bucket_replication_configuration" "s3_tf_replication" {
     id     = "replication-rule"
     status = "Enabled"
 
-    
+
     filter {
-  prefix = ""
-}
+      prefix = ""
+    }
 
     destination {
       bucket        = "arn:aws:s3:::your-replica-bucket-name" # Replace
