@@ -1,53 +1,51 @@
-name: Terraform CI
+name: Terraform CI/CD
 
 on:
   pull_request:
-    branches: [ "main" ]
+    paths:
+      - '**/*.tf'
+    branches:
+      - main
 
 jobs:
-  CI:
+  terraform:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-   
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        terraform_version: 1.3.7  # Set the desired Terraform version
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+    - name: Install Checkov
+      run: |
+        pip install checkov
 
-    - name: Terraform fmt
-      run: terraform fmt -check
+    - name: Install TFLint
+      run: |
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
     - name: Terraform Init
       run: terraform init
-       
+
     - name: Terraform Validate
       run: terraform validate
 
-    - uses: terraform-linters/setup-tflint@v3
-      with:
-        tflint_version: latest
-   
-    - name: Show version
-      run: tflint --version
+    - name: Run Checkov - Terraform Static Analysis
+      run: checkov -d .
 
-    - name: Init TFLint
-      run: tflint --init
+    - name: Run TFLint - Terraform Linter
+      run: tflint
 
-    - name: Run TFLint
-      run: tflint -f compact
-
-    - name: Checkov
-      uses: bridgecrewio/checkov-action@master
-      with:
-        framework: terraform
-   
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform plan -out=tfplan
+
+    - name: Upload Terraform Plan
+      uses: actions/upload-artifact@v2
+      with:
+        name: terraform-plan
+        path: tfplan
+

@@ -1,14 +1,13 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
+      source = "hashicorp/aws"
+      version = "5.95.0"
     }
   }
-  # required for tflint to work properly
-  required_version = ">= 1.3.0"
 }
 
 provider "aws" {
-  region = var.region
+  # Configuration options
+  region = "us-east-1"
 }
